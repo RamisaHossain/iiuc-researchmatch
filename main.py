@@ -1,4 +1,25 @@
 
+import threading
+from fastapi.responses import StreamingResponse
+
+def keepalive_json(work):
+    """Run work() in a thread and send spaces while waiting, so Cloudflare's
+    ~100s limit never triggers. Leading spaces are ignored by response.json()."""
+    def gen():
+        box = {}
+        def run():
+            try:
+                box["r"] = work()
+            except Exception as e:
+                box["r"] = {"success": False, "error": str(e)}
+        t = threading.Thread(target=run, daemon=True)
+        t.start()
+        while t.is_alive():
+            yield b" "
+            t.join(timeout=10)
+        yield json.dumps(box["r"]).encode("utf-8")
+    return StreamingResponse(gen(), media_type="application/json")
+
 from fastapi import FastAPI
 import urllib.request
 import json
@@ -211,3 +232,82 @@ def match_faculty(data: ResearchInput):
             "success": False,
             "error": str(error)
         }
+
+
+
+class ChatInput(BaseModel):
+    message: str
+    history: list[dict] = []
+
+
+@app.post("/api/chat")
+def research_chat(data: ChatInput):
+    message = data.message.strip()
+
+    if not message:
+        return {"success": False, "error": "Please enter a message."}
+
+    # Keep only recent conversation messages.
+    conversation = data.history[-10:]
+
+    messages = [
+        {
+            "role": "system",
+            "content": (
+                "You are the IIUC ResearchMatch research assistant. "
+                "Help university students understand research topics, "
+                "identify the skills they need, plan beginner-friendly "
+                "learning roadmaps, explore project ideas, and understand "
+                "research methods. Explain technical concepts clearly. "
+                "Ask a follow-up question when it would help. "
+                "Do not claim that fictional faculty profiles are real. "
+                "Do not invent research papers, citations, faculty details, "
+                "or learning resources. Distinguish suggestions from facts. "
+                "Give practical steps appropriate for a beginner."
+            )
+        }
+    ]
+
+    for item in conversation:
+        role = item.get("role")
+        content = item.get("content", "")
+
+        if role in ("user", "assistant") and isinstance(content, str):
+            if content.strip():
+                messages.append({
+                    "role": role,
+                    "content": content[:4000]
+                })
+
+    messages.append({"role": "user", "content": message})
+
+    try:
+        request_data = json.dumps({
+            "model": MODEL_NAME,
+            "messages": messages,
+            "stream": False,
+            "options": {"temperature": 0.4}
+        }).encode("utf-8")
+
+        request = urllib.request.Request(
+            "http://localhost:11434/api/chat",
+            data=request_data,
+            headers={"Content-Type": "application/json"},
+            method="POST"
+        )
+
+        with urllib.request.urlopen(request, timeout=300) as response:
+            result = json.loads(response.read().decode("utf-8"))
+
+        answer = result.get("message", {}).get("content", "").strip()
+
+        if not answer:
+            return {
+                "success": False,
+                "error": "The local model returned an empty answer."
+            }
+
+        return {"success": True, "answer": answer}
+
+    except Exception as error:
+        return {"success": False, "error": str(error)}
