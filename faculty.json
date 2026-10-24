@@ -1,0 +1,63 @@
+
+[
+  {
+    "id": 1,
+    "name": "Dr. Sample Faculty A",
+    "department": "Computer Science and Engineering",
+    "research_areas": [
+      "Deep learning",
+      "Urban sound classification",
+      "Audio signal processing",
+      "Environmental sound recognition"
+    ],
+    "methods": [
+      "Convolutional Neural Networks",
+      "Machine Learning"
+    ],
+    "keywords": [
+      "CNN",
+      "UrbanSound8K",
+      "Audio Classification",
+      "Deep Learning"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Dr. Sample Faculty B",
+    "department": "Computer Science and Engineering",
+    "research_areas": [
+      "Computer vision",
+      "Medical image analysis",
+      "Brain tumor classification"
+    ],
+    "methods": [
+      "Convolutional Neural Networks",
+      "Image Classification"
+    ],
+    "keywords": [
+      "CNN",
+      "MRI",
+      "Medical Imaging",
+      "Deep Learning"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Dr. Sample Faculty C",
+    "department": "Computer Science and Engineering",
+    "research_areas": [
+      "Natural language processing",
+      "Text classification",
+      "Information retrieval"
+    ],
+    "methods": [
+      "Transformer Models",
+      "Text Mining"
+    ],
+    "keywords": [
+      "NLP",
+      "Text Classification",
+      "Information Retrieval"
+    ]
+  }
+]

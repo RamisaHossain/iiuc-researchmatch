@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IIUC ResearchMatch</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="/">IIUC ResearchMatch</a>
+        <span class="local-badge">Local AI · Private by design</span>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <p class="eyebrow">RESEARCH DISCOVERY AT IIUC</p>
+            <h1>Find your research direction.</h1>
+            <p class="subtitle">
+                Describe an idea, discover relevant research areas,
+                and explore faculty profiles that may match your interests.
+            </p>
+        </section>
+
+        <section class="workspace">
+            <div class="section-heading">
+                <span class="step-number">01</span>
+                <div>
+                    <h2>Your research idea</h2>
+                    <p>Start with a topic, problem, or research question.</p>
+                </div>
+            </div>
+
+            <label for="researchText">Research idea</label>
+            <textarea
+                id="researchText"
+                rows="6"
+                placeholder="For example: I want to classify urban sounds using deep learning..."
+            ></textarea>
+
+            <button id="analyzeButton" type="button">
+                Analyze research idea
+            </button>
+
+            <p id="status" role="status" aria-live="polite"></p>
+
+            <section id="analysisSection" hidden>
+                <div class="section-heading">
+                    <span class="step-number">02</span>
+                    <div>
+                        <h2>Research profile</h2>
+                        <p>Review the AI-generated summary before matching.</p>
+                    </div>
+                </div>
+
+                <label for="topic">Research topic</label>
+                <input id="topic" type="text">
+
+                <label for="keywords">Keywords (comma-separated)</label>
+                <textarea id="keywords" rows="3"></textarea>
+
+                <button id="matchButton" type="button">
+                    Find faculty matches
+                </button>
+            </section>
+
+            <section id="matchesSection" hidden>
+                <div class="section-heading">
+                    <span class="step-number">03</span>
+                    <div>
+                        <h2>Potential faculty matches</h2>
+                        <p>Ranked by text similarity, not verified suitability.</p>
+                    </div>
+                </div>
+
+                <div id="matches"></div>
+            </section>
+        </section>
+
+        <footer>
+            AI runs locally on this computer. Demonstration profiles are fictional.
+        </footer>
+    </main>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
