@@ -22,6 +22,7 @@ app.mount(
 )
 
 
+
 @app.get("/", include_in_schema=False)
 def serve_homepage():
     return FileResponse(STATIC_DIR / "index.html")
